@@ -2,7 +2,7 @@ import argparse
 import logging
 import sys
 
-import ham.radio_types
+import ham.util.radio_types
 from ham.radio_generator import RadioGenerator
 from ham.wizard import Wizard
 
@@ -49,20 +49,20 @@ def main():
 	parser.add_argument(
 		'--radios', '-r',
 		choices=[
-			ham.radio_types.DEFAULT,
-			ham.radio_types.BAOFENG,
-			ham.radio_types.FTM400,
-			ham.radio_types.D878,
-			ham.radio_types.CS800,
+			ham.util.radio_types.DEFAULT,
+			ham.util.radio_types.BAOFENG,
+			ham.util.radio_types.FTM400,
+			ham.util.radio_types.D878,
+			ham.util.radio_types.CS800,
 		],
 		default=[],
 		nargs='+',
 		help=f"""Name of target radios to create.
-		{ham.radio_types.DEFAULT} -- This is a replication of the input, primarily used for validation/testing.
-		{ham.radio_types.BAOFENG} -- Baofeng UV-5R and F8-HP via CHiRP
-		{ham.radio_types.FTM400} -- Yaesu FTM-400 via RT Systems app 
-		{ham.radio_types.D878} -- Anytone D878 or D868
-		{ham.radio_types.CS800} -- Connect Systems CS800D
+		{ham.util.radio_types.DEFAULT} -- This is a replication of the input, primarily used for validation/testing.
+		{ham.util.radio_types.BAOFENG} -- Baofeng UV-5R and F8-HP via CHiRP
+		{ham.util.radio_types.FTM400} -- Yaesu FTM-400 via RT Systems app 
+		{ham.util.radio_types.D878} -- Anytone D878 or D868
+		{ham.util.radio_types.CS800} -- Connect Systems CS800D
 		"""
 	)
 

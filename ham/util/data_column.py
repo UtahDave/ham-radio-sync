@@ -1,6 +1,6 @@
 import logging
 
-from ham import radio_types
+from ham.util import radio_types
 
 
 class DataColumn:
