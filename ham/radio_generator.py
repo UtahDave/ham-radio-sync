@@ -9,15 +9,17 @@ from ham.util.file_util import FileUtil, RadioWriter
 from ham.radio.radio_additional import RadioAdditionalData
 from ham.radio.radio_channel import RadioChannel
 from ham.radio.radio_zone import RadioZone
+from ham.util.validator import Validator
 
 
 class RadioGenerator:
-	radio_list = []
-
 	def __init__(self, radio_list):
 		self.radio_list = radio_list
+		self._validator = Validator()
 
 	def generate_all_declared(self):
+		validation_errors = []
+
 		digital_contacts = self._generate_digital_contact_data()
 		dmr_ids = self._generate_dmr_id_data()
 		zones = self._generate_zone_data()
@@ -25,6 +27,12 @@ class RadioGenerator:
 
 		feed = open("in/input.csv", "r")
 		csv_reader = csv.DictReader(feed)
+
+		line_num = 1
+		for line in csv_reader:
+			line_errors = self._validator.validate_radio_channel(line, line_num, feed.name)
+			validation_errors += line_errors
+			line_num += 1
 
 		radio_files = dict()
 		radio_channels = dict()
@@ -51,6 +59,9 @@ class RadioGenerator:
 			logging.debug(f"Processing radio line {line_num}")
 			if line_num % file_util.RADIO_LINE_LOG_INTERVAL == 0:
 				logging.info(f"Processing radio line {line_num}")
+
+			self._validator.validate_radio_channel(line, line_num, feed.name)
+
 			radio_channel = RadioChannel(line, digital_contacts, dmr_ids)
 			radio_channels[radio_channel.number] = radio_channel
 			line_num += 1
