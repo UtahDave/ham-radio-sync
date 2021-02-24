@@ -17,6 +17,10 @@ class Validator:
 		self._dmr_id_template = DmrId.create_empty()
 		self._zone_template = RadioZone.create_empty()
 		self._dmr_user_template = DmrUser.create_empty()
+
+		self._short_names = dict()
+		self._medium_names = dict()
+		self._long_names = dict()
 		return
 
 	def validate_dmr_user(self, cols, line_num, file_name):
@@ -37,7 +41,45 @@ class Validator:
 
 	def validate_radio_channel(self, cols, line_num, file_name):
 		needed_cols_dict_gen = dict(self._radio_channel_template.__dict__)
-		return self._validate_generic(cols, line_num, file_name, needed_cols_dict_gen)
+		errors = self._validate_generic(cols, line_num, file_name, needed_cols_dict_gen)
+		if len(errors) > 0:
+			return errors
+
+		channel = RadioChannel(cols, None, None)
+		if channel.short_name.fmt_val() in self._short_names.keys():
+			err = ValidationError(
+							f"Collision in {channel.short_name.get_alias(radio_types.DEFAULT)} "
+							f"(value: `{channel.short_name.fmt_val()}`) found with line"
+							f" {self._short_names[channel.short_name.fmt_val()]}."
+							f" Codeplug applications do not handle this well.", line_num, file_name)
+			logging.debug(err.message)
+			errors.append(err)
+		else:
+			self._short_names[channel.short_name.fmt_val()] = line_num
+
+		if channel.medium_name.fmt_val() in self._medium_names.keys():
+			err = ValidationError(
+							f"Collision in {channel.medium_name.get_alias(radio_types.DEFAULT)} "
+							f"(value: `{channel.medium_name.fmt_val()}`) found with line"
+							f" {self._medium_names[channel.medium_name.fmt_val()]}."
+							f" Codeplug applications do not handle this well.", line_num, file_name)
+			logging.debug(err.message)
+			errors.append(err)
+		else:
+			self._medium_names[channel.medium_name.fmt_val()] = line_num
+
+		if channel.name.fmt_val() in self._long_names.keys():
+			err = ValidationError(
+							f"Collision in {channel.name.get_alias(radio_types.DEFAULT)} "
+							f"(value: `{channel.name.fmt_val()}`) found with line"
+							f" {self._long_names[channel.name.fmt_val()]}."
+							f" Codeplug applications do not handle this well.", line_num, file_name)
+			logging.debug(err.message)
+			errors.append(err)
+		else:
+			self._long_names[channel.name.fmt_val()] = line_num
+
+		return errors
 
 	def _validate_generic(self, cols, line_num, file_name, needed_cols_dict_gen):
 		errors = []

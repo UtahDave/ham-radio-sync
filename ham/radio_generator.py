@@ -47,7 +47,7 @@ class RadioGenerator:
 		if len(all_errors) > 0:
 			logging.error("--- VALIDATION ERRORS, CANNOT CONTINUE ---")
 			for err in all_errors:
-				logging.error(f"\t\tfile: `{err.file_name}` line:`{err.line}` validation error: {err.message}")
+				logging.error(f"\t\tfile: `{err.file_name}` line:{err.line_num} validation error: {err.message}")
 			return
 		else:
 			logging.info("File validation complete, no obvious formatting errors found")

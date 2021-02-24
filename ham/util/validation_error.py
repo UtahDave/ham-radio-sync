@@ -1,7 +1,7 @@
 
 class ValidationError(Exception):
-	def __init__(self, message, line, file_name):
+	def __init__(self, message, line_num, file_name):
 		self.message = message
-		self.line = line
+		self.line_num = line_num
 		self.file_name = file_name
 		return
