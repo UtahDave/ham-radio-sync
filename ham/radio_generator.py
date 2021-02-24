@@ -25,6 +25,8 @@ class RadioGenerator:
 			for err in file_errors:
 				logging.error(f"\t\t{err.message}")
 			return
+		else:
+			logging.info("All necessary files found")
 
 		digital_contacts, digi_contact_errors = self._generate_digital_contact_data()
 		dmr_ids, dmr_id_errors = self._generate_dmr_id_data()
@@ -45,8 +47,10 @@ class RadioGenerator:
 		if len(all_errors) > 0:
 			logging.error("--- VALIDATION ERRORS, CANNOT CONTINUE ---")
 			for err in all_errors:
-				logging.error(f"\t\tfile: `{err.file_name}` line:`{err.line}` validation error:`{err.message}`")
+				logging.error(f"\t\tfile: `{err.file_name}` line:`{err.line}` validation error: {err.message}")
 			return
+		else:
+			logging.info("File validation complete, no obvious formatting errors found")
 
 		radio_files = dict()
 		radio_channels = dict()

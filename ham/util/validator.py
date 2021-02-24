@@ -49,6 +49,14 @@ class Validator:
 				continue
 			needed_cols[val.get_alias(radio_types.DEFAULT)] = val
 
+		ignored_cols = []
+		for col in cols.keys():
+			if col not in needed_cols.keys():
+				ignored_cols.append(col)
+
+		for ignored in ignored_cols:
+			cols.pop(ignored)
+
 		for key in cols.keys():
 			if key not in needed_cols.keys():
 				err = ValidationError(f"`{key}` missing from entry.", line_num, file_name)
